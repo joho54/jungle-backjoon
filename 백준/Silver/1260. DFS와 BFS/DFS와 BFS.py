@@ -31,6 +31,7 @@ def bfs(root: int):
 def dfs(v: int, is_visited: list):
     # dfs 어떻게 구현하지? 간단하지 뭐
     print(v, end=' ')
+    is_visited[v] = True
     for u in sorted(E[v]):
         if not is_visited[u]:
             is_visited[u] = True
@@ -50,7 +51,6 @@ if __name__ == '__main__':
         E[v_].append(u)
     # print(E)
     is_visited = [False for _ in range(n+1)] # 각 간선의 방문 여부
-    is_visited[v] = True
     dfs(v, is_visited)
     print()
     bfs(v)

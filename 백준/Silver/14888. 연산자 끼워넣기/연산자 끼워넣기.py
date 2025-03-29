@@ -22,52 +22,35 @@
 """ 
 
 import sys
+MAX_INT = sys.maxsize
+MIN_INT = -sys.maxsize
 
-def dfs(op_list: list, current_val: int, num_idx: int):
+def dfs(current_val: int, num_idx: int):
     global max_ans, min_ans
-    if len(op_list) == n-1: # 모든 연산을 끝냈다면
+    if num_idx == n: # 모든 연산을 끝냈다면
         max_ans = max(max_ans, current_val)
         min_ans = min(min_ans, current_val)
         return
     for i in range(len(visited)):
         if visited[i] > 0:
-            op_list.append(i)
             visited[i] -= 1
             result = mapper[i]((current_val, A[num_idx]))
-            # print(f'{current_val, mapper2[i], A[num_idx]} = {result}')
-            # print(result)
-            dfs(op_list, result, num_idx+1)
+            dfs(result, num_idx+1)
             visited[i]+= 1
-            op_list.remove(i)
-
 
 if __name__ == '__main__':	
     input = sys.stdin.readline
     n = int(input().strip())
     A = tuple(map(int, input().split()))
-    ops = list(map(int, input().split()))
+    visited = list(map(int, input().split()))
     mapper = {0: lambda x: x[0]+x[1], 
               1: lambda x: x[0]-x[1], 
               2: lambda x: x[0]*x[1], 
               3: lambda x: x[0]//x[1] if x[0] > 0 else -(-x[0]//x[1])}
-    # mapper2 = {0: '+', 
-    #           1: '-', 
-    #           2: '*', 
-    #           3: '/'}
-    # print(ops)
-    # print(A)
-    max_ans = -sys.maxsize
-    min_ans = sys.maxsize
-    for i in range(len(ops)): # 각각의 시작점에 대해
-        # 아 알거 같기도 하고 모르겠네. 일단 연산자 쌍을 출력하는 거를 만들어 볼가.
-        # copy?
-        visited = ops.copy()
-        result = 0
-        if ops[i] > 0: #연산자를 쓸 수 있다면
-            visited[i] -= 1 # 1 빼고
-            result = mapper[i]((A[0], A[1])) # 최초 연산을 한 다음
-            dfs([i], result, 2) # dfs로 넘기기.
-    print(max_ans )
+    max_ans = MIN_INT
+    min_ans = MAX_INT
+    dfs(A[0], 1) # dfs로 넘기기.
+    print(max_ans)
     print(min_ans)
 
 

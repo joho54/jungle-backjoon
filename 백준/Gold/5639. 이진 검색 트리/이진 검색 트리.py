@@ -1,29 +1,29 @@
 import sys
 sys.setrecursionlimit(10**6)
 
-preorder = []
-while True:
-    try:
-        preorder.append(int(sys.stdin.readline()))
-    except:
-        break
 
-def postorder(start, end):
-    if start >= end:
+def post_order(left, right):
+    # 리프 노드면 출력을 해줘야 함.
+    if left >= right:
         return
-    
-    root = preorder[start]
-    idx = start + 1
-
-    # 오른쪽 서브트리의 시작점을 찾기
-    while idx < end and preorder[idx] < root:
-        idx += 1
-
-    # 왼쪽 서브트리
-    postorder(start + 1, idx)
-    # 오른쪽 서브트리
-    postorder(idx, end)
-    # 루트 출력
+    root = nodes[left]
+    k = left+1
+    while k < right and nodes[k] < root:
+        k += 1
+    post_order(left+1, k)
+    post_order(k, right)
     print(root)
 
-postorder(0, len(preorder))
+if __name__ == "__main__":
+
+    nodes = []
+    for line in sys.stdin:
+        nodes.append(int(line.strip()))
+    # 루트를 먼저 받는다.
+    post_order(0, len(nodes)) # 재귀적으로 서브트리를 정리
+"""
+post_order(left+1, k-1)
+->
+post_order(left+1, k)
+
+"""

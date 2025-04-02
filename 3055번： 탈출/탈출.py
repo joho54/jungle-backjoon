@@ -46,6 +46,7 @@ def bfs_hodge(s: tuple):
                 if in_range(nx, ny) \
                 and (water_time[nx][ny] > cnt\
                 or water_time[nx][ny] == INIT_WATER)\
+                    and not forest[nx][ny] == 'X'\
                     and water_time[nx][ny] != HODGE_VISITED: # 물이 도달하는 시간이 느리거나 (돌은 NO_WATER라서 배재됨. -1이라서 안 오거나)
                     if (nx, ny) == dest:
                         print(cnt)

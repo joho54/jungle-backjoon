@@ -38,35 +38,39 @@ def in_range(x, y, z):
 import sys
 from collections import deque
 
-def bfs(root: list): # only ripen tomato!
-    has_ripen = False
-    que = deque()
-
-    que.appendleft(root)
+def bfs(roots: list): # only ripen tomato!
+    global day
+    que = deque(roots)
     # print(f'root: {root}')
-    x, y, z = root
-    tomato[x][y][z] = RIPEN_VISITED
     
-    cnt = 0
     while que:
-        x, y, z = que.pop()
-        # print(f'discovering {x, y, z}')
-        for dx, dy, dz in zip(dxs, dys, dzs):
-            nx, ny, nz = x + dx, y + dy, z + dz
-            if in_range(nx, ny, nz):
-                if tomato[nx][ny][nz] == UNRIPE:
-                    # print(f'tomato {nx, ny, nz} not ripped')
-                    has_ripen = True
-                    tomato[nx][ny][nz] = RIPEN_NOT_VISITED
-                    que.appendleft((nx, ny, nz))
-                elif tomato[nx][ny][nz] == RIPEN_NOT_VISITED:
-                    tomato[nx][ny][nz] = RIPEN_VISITED
-                    que.appendleft((nx, ny, nz))
-
-        print(f'result on {cnt} ==========')
-        print_tomato(tomato)
-        cnt += 1
-    return has_ripen
+        is_over = True
+        for _ in range(len(que)):
+            x, y, z = que.pop()
+            # p1: tomato[0][0][1]
+            # p2: tomato[0][1][0]
+            tomato[x][y][z] = RIPEN_VISITED
+            # print(f'discovering {x, y, z}')
+            for dx, dy, dz in zip(dxs, dys, dzs):
+                nx, ny, nz = x + dx, y + dy, z + dz
+                if in_range(nx, ny, nz):
+                    if tomato[nx][ny][nz] == UNRIPE:
+                        # print(f'tomato {nx, ny, nz} not ripped')
+                        tomato[nx][ny][nz] = RIPEN_VISITED
+                        que.appendleft((nx, ny, nz))
+                        is_over = False
+                    elif tomato[nx][ny][nz] == RIPEN_NOT_VISITED:
+                        tomato[nx][ny][nz] = RIPEN_VISITED
+                        que.appendleft((nx, ny, nz))
+                        is_over = False
+        # print(f'result on {cnt} ==========')
+        if not is_over:
+            day += 1
+            # print(f'day update--------day {day}')
+            # print_tomato(tomato)
+        else:
+            # print(f'day over on --- day {day}')
+            return
 
 def print_tomato(tomato):
     for i, level in enumerate(tomato):
@@ -78,11 +82,9 @@ if __name__ == "__main__":
     input = sys.stdin.readline
     m, n, h = tuple(map(int, input().split()))
     tomato = [[list(map(int, input().split())) for _ in range(n)] for _ in range(h)]
-    print_tomato(tomato)
-    # while True:
-    # 완전 탐색으로 루트 찾기
-    ### 여기부터가 1일
+    # print_tomato(tomato)
     day = 0
+    all_ripen = True
     while True:
         day_flag = False
         # gather roots
@@ -90,18 +92,28 @@ if __name__ == "__main__":
         for x in range(h):
             for y in range(n):
                 for z in range(m):
-                    # print(f'x:{x}, y:{y}, z:{z}')
                     if tomato[x][y][z] == RIPEN_NOT_VISITED:
                         roots.append((x, y, z))
-        for root in roots:
-            bfs(root)
-        #만약 1일의 탐색이 끝났는데 has_ripen == False라면 이제 그만~ ^0^
-        print(f'day {day}')
-        print_tomato(tomato)
-        if not day_flag: 
-            break
-        day += 1
+                    if tomato[x][y][z] == UNRIPE:
+                        all_ripen = False
+        # roots = [아무튼 하나만 1이어야 함]
+        if all_ripen: 
+            print(0)
+            sys.exit(0)
+        else:
+            bfs(roots)
+            for x in range(h):
+                for y in range(n):
+                    for z in range(m):
+                        if tomato[x][y][z] == UNRIPE:
+                            print(-1)
+                            sys.exit(0)
+            # print(f'day {day}')
+            # print_tomato(tomato)
+            if not day_flag: 
+                break
 
-    print('result')
-    print_tomato(tomato)
+
+    # print('result')
+    # print_tomato(tomato)
     print(day)

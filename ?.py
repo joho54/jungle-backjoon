@@ -1,25 +1,24 @@
+from collections import deque
 
-n = int(input())
-arr = list(map(int, input().split()))
-max_val = 0
+def recur(n):
+    s = deque()
+    while True:
+        if n > 0:
+            s.append(n)
+            n = n - 1
+            continue
+        else:
+            if s:
+                n = s.pop()
+            else:
+                break
+        print(n)
+        n = n - 2
 
-def update_max(new_val):
-    global max_val
-    if new_val > max_val: max_val = new_val
-
-def pick(i, A):
-    if(i == n): 
-        update_max(calc(A))
-        return
-    for idx in range(n): 
-        if arr[idx] not in A:
-            pick(i + 1, [*A, arr[idx]])
-
-def calc(A):
-    tmp = 0
-    for i in range(1, n):
-        tmp += abs(A[i-1] - A[i])
-    return tmp
-
-pick(0,[])  
-print(max_val)
+def recur2(n):
+    if n > 0:
+        recur2(n-1)
+        recur2(n-2)
+        print(n)
+recur2(4)
+# recur(4)

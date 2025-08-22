@@ -4,8 +4,8 @@ from collections import defaultdict, deque
 def solve(times: list, graph: defaultdict, w: int):
     ordered, sources = topo_sort(graph=graph)
     distances = {v:0 for v in graph}
-    for source in sources:
-        distances[source] = times[source]
+    for source in sources: # DEBUG: 처음부터 내적이 0인 노드를 전부 거리 초기화해주지 않으면 경우에 따라 오답이 될 수 있음. ordered의 첫 요소만 초기화 할 경우 모든 경로를 고려 못함
+        distances[source] = times[source] 
     
     for u in ordered:
         for v in graph[u]:
